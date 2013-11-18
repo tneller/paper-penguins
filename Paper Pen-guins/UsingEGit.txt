@@ -1,0 +1,2 @@
+General Git introduction (command-line): http://git-scm.com/book
+Using EGit in Eclipse: http://wiki.eclipse.org/EGit/User_Guide

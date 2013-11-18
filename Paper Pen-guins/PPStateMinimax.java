@@ -114,7 +114,7 @@ public class PPStateMinimax extends PPState {
 			return qBest;
 		
 	}
-
+	
 	int[] playoutPieceScoreVector = new int[TOTAL_PIECES];
 	public double[] randomPlayoutBoardEval(PPState state, int numPlayouts) {
 		double[] posValues = new double[NUM_POS];

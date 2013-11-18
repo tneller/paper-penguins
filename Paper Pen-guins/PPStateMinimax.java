@@ -115,23 +115,23 @@ public class PPStateMinimax extends PPState {
 		
 	}
 
-//	int[] playoutPieceScoreVector = new int[TOTAL_PIECES];
-//	public double[] randomPlayoutBoardEval(PPState state, int numPlayouts) {
-//		double[] posValues = new double[NUM_POS];
-//		int[] posCounts = new int[NUM_POS];
-//		if (state.gameOver())
-//			return posValues;
-//		for (int p = 0; p < numPlayouts; p++) {
-//			for (int i = 0; i < TOTAL_PIECES; i++)
-//				playoutPieceScoreVector[i] = 0;
-//			randomBoardEvalPlayout(state);
-//		}
-//		for (int i = 0; i < NUM_POS; i++)
-//			posValues[i] /= posCounts[i];
-//		return posValues;
-//		
-//	}
-//	
+	int[] playoutPieceScoreVector = new int[TOTAL_PIECES];
+	public double[] randomPlayoutBoardEval(PPState state, int numPlayouts) {
+		double[] posValues = new double[NUM_POS];
+		int[] posCounts = new int[NUM_POS];
+		if (state.gameOver())
+			return posValues;
+		for (int p = 0; p < numPlayouts; p++) {
+			for (int i = 0; i < TOTAL_PIECES; i++)
+				playoutPieceScoreVector[i] = 0;
+			//randomBoardEvalPlayout(state);
+		}
+		for (int i = 0; i < NUM_POS; i++)
+			posValues[i] /= posCounts[i];
+		return posValues;
+		
+	}
+	
 	
 	
 	

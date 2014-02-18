@@ -1,5 +1,8 @@
 import java.util.Scanner;
 import java.util.Arrays;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.JOptionPane;
 
 public class PPClient2 {
 	
@@ -123,12 +126,16 @@ public class PPClient2 {
 						System.out.println("Circle has run out of time. Square wins.");
 						System.exit(1);
 					}
-						
+					if (!stateInt.hasLegalMove()){
+						stateInt.currentPlayer=(stateInt.currentPlayer==stateInt.SQUARE)? stateInt.CIRCLE:stateInt.SQUARE;
+						stateP1.currentPlayer=(stateP1.currentPlayer==stateP1.SQUARE)? stateP1.CIRCLE:stateP1.SQUARE;
+					}
+					
 				
 			}
 		}
 		
-		
+		JOptionPane.showMessageDialog(null, String.format("Player %d wins!\n", stateInt.getWinner() == PPState.SQUARE ? 1 : 2));
 	}
 
 }

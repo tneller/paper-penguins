@@ -1,0 +1,163 @@
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class PPClient3 {
+	
+	
+
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("How long?");
+		int seconds = scanner.nextInt();
+		long totalMillis = 1000 * seconds;
+		long[] millisRemaining = {totalMillis / 2, totalMillis / 2};
+		
+		PPInterface ppIntFace = new PPInterface();
+		PPState stateInt = ppIntFace.getPanel().state;
+		
+
+
+		
+		int pressRow = ppIntFace.getPanel().pressRow;
+		int pressCol = ppIntFace.getPanel().pressCol;
+		int releaseRow = ppIntFace.getPanel().releaseRow;
+		int releaseCol = ppIntFace.getPanel().releaseCol;
+		
+
+		PPStateMCMoveEval stateP1 = new PPStateMCMoveEval();
+		PPPlayer player1 = stateP1; //computer player
+		
+		PPStateMCMoveEval stateP2 = new PPStateMCMoveEval();
+		PPPlayer player2 = stateP2; //computer player2
+		
+		int[] play1;
+		int[] play2;
+		
+		stateInt.init(0);
+		stateP1.init(0);
+		stateP2.init(0);
+
+		
+		
+		while (!stateInt.gameOver()) {
+			
+			if (stateP1.getPlayer() == PPState.SQUARE ) { // Client plays square.
+				System.out.println("Computer's turn");
+				
+				ppIntFace.getPanel().mouseEnabled=false;
+				
+				
+				long startTime = System.currentTimeMillis();
+				play1 = player1.getPlay(millisRemaining[0]);
+
+				long turnTime = System.currentTimeMillis() - startTime;
+				millisRemaining[0] -= turnTime;
+				if (millisRemaining[0] < 0) {
+					System.out.println("Square has run out of time. Circle wins.");
+					System.exit(2);
+				}
+				if (stateP1.turnsTaken<=stateInt.TOTAL_PIECES &&stateP1.canMovePen(-1, -1, play1[1]/8, play1[1]%8)){
+					stateP1.makeMove(play1[0], play1[1]);
+					stateP2.makeMove(play1[0], play1[1]);
+					stateInt.makeMove(play1[0], play1[1]);
+					ppIntFace.repaint();
+					ppIntFace.getPanel().scoreP.repaint();
+					System.out.println("Player's turn");
+
+				}
+				
+				else if (!(stateP1.turnsTaken<=stateInt.TOTAL_PIECES &&stateP1.canMovePen(play1[0]/8, play1[0]%8, play1[1]/8, play1[1]%8))) {
+					stateP1.makeMove(play1[0], play1[1]);
+					stateP2.makeMove(play1[0], play1[1]);
+					stateInt.makeMove(play1[0], play1[1]);
+					ppIntFace.repaint();
+					ppIntFace.getPanel().scoreP.repaint();
+					System.out.println("Player's turn");
+				}
+			}
+			else {
+//				    ppIntFace.getPanel().mouseEnabled=true;
+				
+					long startTime = System.currentTimeMillis();
+					play2 = player2.getPlay(millisRemaining[0]);
+				
+					if (stateP2.turnsTaken<=stateInt.TOTAL_PIECES &&stateP2.canMovePen(-1, -1, play2[1]/8, play2[1]%8)){
+						stateP2.makeMove(play2[0], play2[1]);
+						stateP1.makeMove(play2[0], play2[1]);
+						stateInt.makeMove(play2[0], play2[1]);
+						ppIntFace.repaint();
+						ppIntFace.getPanel().scoreP.repaint();
+						System.out.println("Player's turn");
+
+					}
+					
+					else if (!(stateP1.turnsTaken<=stateInt.TOTAL_PIECES &&stateP2.canMovePen(play2[0]/8, play2[0]%8, play2[1]/8, play2[1]%8))) {
+						stateP2.makeMove(play2[0], play2[1]);
+						stateP1.makeMove(play2[0], play2[1]);
+						stateInt.makeMove(play2[0], play2[1]);
+						ppIntFace.repaint();
+						ppIntFace.getPanel().scoreP.repaint();
+						System.out.println("Player's turn");
+					}
+					
+					
+					
+					
+					
+//					if (stateInt.turnsTaken<=stateInt.TOTAL_PIECES ){
+//						if (ppIntFace.getPanel().mousePressed  && !ppIntFace.getPanel().isMovingPiece){
+//							pressRow=ppIntFace.getPanel().pressRow;
+//							pressCol = ppIntFace.getPanel().pressCol;
+//							
+//							if (stateInt.canMovePen(-1, -1, pressRow, pressCol)){
+//								stateInt.makeMove(-1,pressRow*8+pressCol);
+//								stateP1.makeMove(-1,pressRow*8+pressCol);
+//								System.out.println("computer"+ Arrays.deepToString(stateP1.piecePositions));
+//								ppIntFace.repaint();
+//								ppIntFace.getPanel().mousePressed=false;
+//							}
+//							
+//						}
+//					}
+//					
+//
+//					else if (ppIntFace.getPanel().mousePressed  && !(stateInt.turnsTaken<=stateInt.TOTAL_PIECES)) {
+//						pressRow = ppIntFace.getPanel().pressRow;
+//						pressCol = ppIntFace.getPanel().pressCol;
+//						System.out.println("isMovingPiece"+ppIntFace.getPanel().isMovingPiece);
+//						if (!ppIntFace.getPanel().isMovingPiece){
+//
+//							releaseRow = ppIntFace.getPanel().releaseRow;
+//							releaseCol = ppIntFace.getPanel().releaseCol;
+//							System.out.println("Interface"+ Arrays.deepToString(stateInt.piecePositions));
+//							System.out.println("Computer"+ Arrays.deepToString(stateP1.piecePositions));
+//							
+//							System.out.println("computer can make move"+ stateP1.canMovePen(pressRow, pressCol, releaseRow, releaseCol));
+//							if (stateP1.canMovePen(pressRow, pressCol, releaseRow, releaseCol)){
+//								System.out.println("computer can make move");
+//								System.out.println("computer"+ Arrays.deepToString(stateP1.piecePositions));
+//								stateP1.makeMove(pressRow*8+pressCol, releaseRow*8+ releaseCol);
+//						
+//							}
+//							ppIntFace.repaint();
+//							ppIntFace.getPanel().mousePressed=false;
+//							}
+//
+//					}
+					
+					
+					long turnTime = System.currentTimeMillis() - startTime;
+					millisRemaining[1] -= turnTime;
+					if (millisRemaining[1] < 0) {
+						System.out.println("Circle has run out of time. Square wins.");
+						System.exit(1);
+					}
+						
+				
+			}
+		}
+		
+		
+	}
+
+}

@@ -2,6 +2,7 @@ import java.util.Scanner;
 import java.util.Arrays;
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.JOptionPane;
 
 public class PPClient2 {
@@ -41,7 +42,6 @@ public class PPClient2 {
 		
 		
 		while (!stateInt.gameOver()) {
-			
 			if (stateP1.getPlayer() == PPState.SQUARE ) { // Client plays square.
 				System.out.println("Computer's turn");
 				
@@ -57,7 +57,7 @@ public class PPClient2 {
 					System.out.println("Square has run out of time. Circle wins.");
 					System.exit(2);
 				}
-				if (stateP1.turnsTaken<=stateInt.TOTAL_PIECES &&stateP1.canMovePen(-1, -1, play1[1]/8, play1[1]%8)){
+				if (stateP1.turnsTaken<stateInt.TOTAL_PIECES &&stateP1.canMovePen(-1, -1, play1[1]/8, play1[1]%8)){
 					stateP1.makeMove(play1[0], play1[1]);
 					stateInt.makeMove(play1[0], play1[1]);
 					ppIntFace.repaint();
@@ -65,7 +65,7 @@ public class PPClient2 {
 
 				}
 				
-				else if (!(stateP1.turnsTaken<=stateInt.TOTAL_PIECES &&stateP1.canMovePen(play1[0]/8, play1[0]%8, play1[1]/8, play1[1]%8))) {
+				else if ((!(stateP1.turnsTaken<stateInt.TOTAL_PIECES)) &&stateP1.canMovePen(play1[0]/8, play1[0]%8, play1[1]/8, play1[1]%8)) {
 					stateP1.makeMove(play1[0], play1[1]);
 					stateInt.makeMove(play1[0], play1[1]);
 					ppIntFace.repaint();
@@ -78,45 +78,55 @@ public class PPClient2 {
 					long startTime = System.currentTimeMillis();
 					
 				
-					if (stateInt.turnsTaken<=stateInt.TOTAL_PIECES ){
+					if (stateInt.turnsTaken<stateInt.TOTAL_PIECES ){
 						if (ppIntFace.getPanel().mousePressed  && !ppIntFace.getPanel().isMovingPiece){
 							pressRow=ppIntFace.getPanel().pressRow;
 							pressCol = ppIntFace.getPanel().pressCol;
-							
 							if (stateInt.canMovePen(-1, -1, pressRow, pressCol)){
-								stateInt.makeMove(-1,pressRow*8+pressCol);
+					//			stateInt.makeMove(-1,pressRow*8+pressCol);
 								stateP1.makeMove(-1,pressRow*8+pressCol);
-								System.out.println("computer"+ Arrays.deepToString(stateP1.piecePositions));
+//								System.out.println("computer"+ Arrays.deepToString(stateP1.piecePositions));
 								ppIntFace.repaint();
-								ppIntFace.getPanel().mousePressed=false;
 							}
 							
 						}
 					}
 					
 
-					else if (ppIntFace.getPanel().mousePressed  && !(stateInt.turnsTaken<=stateInt.TOTAL_PIECES)) {
-						pressRow = ppIntFace.getPanel().pressRow;
-						pressCol = ppIntFace.getPanel().pressCol;
-						System.out.println("isMovingPiece"+ppIntFace.getPanel().isMovingPiece);
-						if (!ppIntFace.getPanel().isMovingPiece){
-
-							releaseRow = ppIntFace.getPanel().releaseRow;
-							releaseCol = ppIntFace.getPanel().releaseCol;
-							System.out.println("Interface"+ Arrays.deepToString(stateInt.piecePositions));
-							System.out.println("Computer"+ Arrays.deepToString(stateP1.piecePositions));
+					else if ((ppIntFace.getPanel().mousePressed ||ppIntFace.getPanel().mouseDragged )&& !(stateInt.turnsTaken<stateInt.TOTAL_PIECES)) {
+//						pressRow = ppIntFace.getPanel().pressRow;
+//						pressCol = ppIntFace.getPanel().pressCol;
+//						System.out.println("Interface"+ Arrays.deepToString(stateInt.piecePositions));
+//						System.out.println("Computer"+ Arrays.deepToString(stateP1.piecePositions));
+						int[] moveMade = ppIntFace.getPanel().moveMade;
+						if (ppIntFace.getPanel().mouseReleased){
+//							releaseRow = ppIntFace.getPanel().releaseRow;
+//							releaseCol = ppIntFace.getPanel().releaseCol;
+							try {
+								Thread.sleep(100);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							System.out.println("Before checking Interface"+ Arrays.deepToString(stateInt.piecePositions));
+//							System.out.println("Computer"+ Arrays.deepToString(stateP1.piecePositions));
 							
-							System.out.println("computer can make move"+ stateP1.canMovePen(pressRow, pressCol, releaseRow, releaseCol));
-							if (stateP1.canMovePen(pressRow, pressCol, releaseRow, releaseCol)){
-								System.out.println("computer can make move");
-								System.out.println("computer"+ Arrays.deepToString(stateP1.piecePositions));
-								stateP1.makeMove(pressRow*8+pressCol, releaseRow*8+ releaseCol);
-						
-							}
-							ppIntFace.repaint();
-							ppIntFace.getPanel().mousePressed=false;
-							}
+			//				System.out.println("computer can make move "+ stateP1.canMovePen(pressRow, pressCol, releaseRow, releaseCol));
+//							System.out.println("move made array "+ moveMade[0]+" "+moveMade[1]);
+//							System.out.println("Before checking Computer "+ Arrays.deepToString(stateP1.piecePositions));
+							
+					        if (stateP1.canMovePen(moveMade[0]/8,moveMade[0]%8,moveMade[1]/8,moveMade[1]%8)){
 
+//								System.out.println("computer can make move");
+//								System.out.println("Interface"+ Arrays.deepToString(stateInt.piecePositions));
+//								System.out.println("computer"+ Arrays.deepToString(stateP1.piecePositions));
+								stateP1.makeMove(moveMade[0],moveMade[1]);
+//								System.out.println("After move Computer "+ Arrays.deepToString(stateP1.piecePositions));
+							}
+					       
+
+						}
+						ppIntFace.repaint();
 					}
 					
 					
@@ -129,6 +139,12 @@ public class PPClient2 {
 					if (!stateInt.hasLegalMove()){
 						stateInt.currentPlayer=(stateInt.currentPlayer==stateInt.SQUARE)? stateInt.CIRCLE:stateInt.SQUARE;
 						stateP1.currentPlayer=(stateP1.currentPlayer==stateP1.SQUARE)? stateP1.CIRCLE:stateP1.SQUARE;
+						if (stateP1.currentPlayer==PPState.SQUARE){
+							System.out.println("Computer's turn");
+						}
+						else{
+							System.out.println("Player's turn");
+						}
 					}
 					
 				
